@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+<h:head>
+    <title>Currency Fair</title>
+    <h:outputStylesheet library="css" name="main.css"/>
+
+    <script type="text/javascript">
+        var wsocket;
+        function connect() {
+            wsocket = new WebSocket("ws://" + window.location.host + ":8000/endpoint");
+            wsocket.onmessage = onMessage;
+        }
+        function onMessage(evt) {
+            var msg = JSON.parse(evt.data);
+
+            var table = document.getElementById("messages");
+            var row = table.insertRow();
+            row.className = table.rows.length % 2 == 0 ? "order-table-odd-row" : "order-table-even-row";
+            createCell(msg.userId, row, 0);
+            createCell(msg.currencyFrom, row, 1);
+            createCell(msg.currencyTo, row, 2);
+            createCell(msg.amountSell, row, 3);
+            createCell(msg.amountBuy, row, 4);
+            createCell(msg.rate, row, 5);
+            createCell(msg.originatingCountry, row, 6);
+            createCell(msg.timePlaced, row, 7);
+            row.scrollIntoView();
+        }
+
+        function createCell(s, row, i) {
+            var cell = row.insertCell(i);
+            cell.innerHTML = s;
+        }
+
+        window.addEventListener("load", connect, false);
+    </script>
+</h:head>
+<h:body>
+    <h1>Messages</h1>
+    <table id="messages" class="order-table">
+        <thead>
+        <tr>
+            <th class="order-table-header" scope="col">userId</th>
+            <th class="order-table-header" scope="col">currencyFrom</th>
+            <th class="order-table-header" scope="col">currencyTo</th>
+            <th class="order-table-header" scope="col">amountSell</th>
+            <th class="order-table-header" scope="col">amountBuy</th>
+            <th class="order-table-header" scope="col">rate</th>
+            <th class="order-table-header" scope="col">originatingCountry</th>
+            <th class="order-table-header" scope="col">timePlaced</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+
+    </table>
+</h:body>
+</html>
